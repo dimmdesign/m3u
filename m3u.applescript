@@ -7,6 +7,10 @@ set LINEBREAK to "
 "
 set VERSION_NUMBER to "0.1"
 
+
+-- the number of songs for which the user should be prompted to confirm they want to export
+set MAX_LENGTH_CHECK to 100
+
 tell application "iTunes"
 
   try
@@ -22,6 +26,20 @@ tell application "iTunes"
   end if
 
   set t to none
+
+  set maxindex to file tracks of p
+  
+  if (length of maxindex is greater than or equal to MAX_LENGTH_CHECK) then
+    activate
+    set r to display dialog "Your playlist " & (quoted form of ((name of p) as string)) & " contains " & (length of maxindex) & " tracks. Are you sure you wish to export it?" with icon caution buttons {"Cancel", "Export to M3U"} default button 2 giving up after 10
+    if (button returned of r is equal to "Cancel") then
+      return
+    end if
+    
+  end if
+  
+  set maxindex to my digits(length of maxindex)
+
 
   set f to {"/", "Users", (do shell script "echo $USER"), "Desktop", my sanitize(name of p)}
   set dest to my unixpath(f)
@@ -42,9 +60,6 @@ tell application "iTunes"
 
   do shell script "echo '#EXTM3U' > " & m3u
   do shell script "echo '' >> " & m3u
-
-  set maxindex to file tracks of p
-  set maxindex to my digits(length of maxindex)
 
   set i to 1
   set buf to ""
