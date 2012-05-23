@@ -1,4 +1,4 @@
-(*
+﻿(*
   David Miller
   http://readmeansrun.com/code/m3u
 *)
@@ -10,6 +10,9 @@ set VERSION_NUMBER to "0.1"
 
 -- the number of songs for which the user should be prompted to confirm they want to export
 set MAX_LENGTH_CHECK to 100
+
+-- the file types to export
+set FILE_EXTENSIONS to {".mp3", ".m4a"}
 
 tell application "iTunes"
 
@@ -28,16 +31,16 @@ tell application "iTunes"
   set t to none
 
   set maxindex to file tracks of p
-  
+
   if (length of maxindex is greater than or equal to MAX_LENGTH_CHECK) then
     activate
     set r to display dialog "Your playlist " & (quoted form of ((name of p) as string)) & " contains " & (length of maxindex) & " tracks. Are you sure you wish to export it?" with icon caution buttons {"Cancel", "Export to M3U"} default button 2 giving up after 10
     if (button returned of r is equal to "Cancel") then
       return
     end if
-    
+
   end if
-  
+
   set maxindex to my digits(length of maxindex)
 
 
@@ -65,31 +68,30 @@ tell application "iTunes"
   set buf to ""
   repeat with t in file tracks of p
     set loc to location of t
-  
+
     set ext to "." & last item of (my split(loc, "."))
-  
-    if (ext is equal to ".mp3" or ext is equal to ".m4a") then
-    
+
+    if (FILE_EXTENSIONS contains ext) then
+
       set loc to quoted form of POSIX path of loc
-    
+
       set newname to my lpad(i, "0", maxindex) & " - " & my sanitize(name of t) & ext
       set dest to my unixpath(f & newname)
-    
+
       set cp to "cp " & loc & " " & dest
-    
+
       do shell script "echo " & (quoted form of ("#EXTINF:" & my int(duration of t) & "," & artist of t & " - " & name of t)) & " >> " & m3u
       do shell script "echo " & (quoted form of newname) & " >> " & m3u
       do shell script "echo '' >> " & m3u
-    
+
       set the clipboard to cp
-    
-    
+
       do shell script cp
-    
+
       set i to i + 1
-    
+
     end if
-  
+
   end repeat
 
 end tell
