@@ -105,7 +105,15 @@ do shell script "open " & my unixpath(f)
 
 
 ------------------------------
+(* generic subroutines follow *)
 
+
+(*
+  #todo
+
+  @param str
+  @return str
+*)
 on sanitize(str)
   set buf to ""
   repeat with i in str
@@ -117,19 +125,23 @@ on sanitize(str)
 end sanitize
 
 
+(*
+  
+
+  @param str (string) - the string to be truncated
+  @param len (int) - the maximum length of the string
+  @return string
+*)
 on truncate(str, len)
 
   if (length of str is less than len) then
     return str
   end if
 
-
   set buf to ""
   set i to 1
   repeat while i ≤ len
-  
     set buf to buf & item i of str
-  
     set i to i + 1
   end repeat
 
@@ -137,6 +149,11 @@ on truncate(str, len)
 
 end truncate
 
+(*
+  
+  @param paths ()
+  @return string
+*)
 on unixpath(paths)
   set p to ""
   set x to 0
@@ -169,7 +186,11 @@ end unixpath
 
 
 (*
-
+  Create a string representation of a list 
+  
+  @param arr (list) - the list to be serialized to a string
+  @param glue (string) - the string to be inserted between each item of the list
+  @return string
 *)
 on implode(arr, glue)
   set buf to ""
@@ -189,7 +210,11 @@ on implode(arr, glue)
 end implode
 
 (*
+  Calculate the index of an item in a list
 
+  @param array (list)
+  @param needle (mixed)
+  @return int - the index of the needle, or -1 if it's not found
 *)
 on indexOf(arr, needle)
   repeat with i from 1 to length of arr
@@ -202,25 +227,29 @@ on indexOf(arr, needle)
 end indexOf
 
 (*
+  Convert a string into a list given a string/character that should be used as the separator
 
+  @param str (string)
+  @param delimiter (string) - 
+  @return list
 *)
 on split(str, delimiter)
 
   set str to str as string
-
   set old to AppleScript's text item delimiters
-  -- set delimiters to delimiter to be used
   set AppleScript's text item delimiters to delimiter
-  -- create the array
   set arr to every text item of str
-  -- restore the old setting
   set AppleScript's text item delimiters to old
-  -- return the result
   return arr
 end split
 
 (*
+  #todo
 
+  @param str (string)
+  @param char (char) - the character to be inserted 
+  @param len (int) - the number of characters that should be contained in the string after being padded
+  @return string
 *)
 on lpad(str, char, len)
   set buf to "" & str
@@ -233,7 +262,10 @@ on lpad(str, char, len)
 end lpad
 
 (*
+  #todo
 
+  @param str (string) - 
+  @return string
 *)
 on enquote(str)
   set buf to ""
@@ -248,8 +280,11 @@ on enquote(str)
 end enquote
 
 (*
-  x - 
-  y - 
+  Return the maximum of two numbers
+
+  @param x (num) - 
+  @param y (num) - 
+  @return num
 *)
 on max(x, y)
   if (x is greater than or equal to y) then
@@ -259,8 +294,11 @@ on max(x, y)
 end max
 
 (*
-  x - 
-  y - 
+  Return the minimum of two numbers
+
+  @param x (num) - 
+  @param y (num) - 
+  @return num
 *)
 on min(x, y)
   if (x is less than or equal to y) then
@@ -270,6 +308,8 @@ on min(x, y)
 end min
 
 (*
+  Calculate the number of characters required to represent an integer in string format
+
   @param x - int
   @return int - the number of digits required to represent x
 *)
@@ -287,7 +327,10 @@ on digits(x)
 end digits
 
 (*
+  Convert a number to an integer
+
   @param d - number to be converted to integer
+  @return int
 *)
 on int(d)
 
@@ -298,8 +341,11 @@ on int(d)
 end int
 
 (*
+  #todo
+
   @param n - number to be rounded
   @param d - precision (# of decimals)
+  @return float
 *)
 on roundOff(n, d) -- .5 away from zero
   set p to 10 ^ d
